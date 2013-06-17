@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<job-template plugin="cloudbees-template@3.11-SNAPSHOT">
+  <description></description>
+  <displayName>CloudBeers Standard Test Job</displayName>
+  <instantiable>true</instantiable>
+  <attributes>
+    <template-attribute>
+      <name>name</name>
+      <displayName>Name</displayName>
+      <control class="com.cloudbees.hudson.plugins.modeling.controls.TextFieldControl"/>
+    </template-attribute>
+  </attributes>
+  <properties/>
+  <transformer class="com.cloudbees.hudson.plugins.modeling.transformer.GroovyTemplateModelTransformer">
+    <template>&lt;?xml version=&apos;1.0&apos; encoding=&apos;UTF-8&apos;?&gt;
+&lt;project&gt;
+  &lt;actions/&gt;
+  &lt;description&gt;&lt;/description&gt;
+  &lt;keepDependencies&gt;false&lt;/keepDependencies&gt;
+  &lt;properties&gt;
+    &lt;nectar.plugins.rbac.groups.JobProxyGroupContainer plugin=&quot;nectar-rbac@3.8&quot;&gt;
+      &lt;groups/&gt;
+    &lt;/nectar.plugins.rbac.groups.JobProxyGroupContainer&gt;
+    &lt;com.cloudbees.jenkins.plugins.securecopy.ExportsJobProperty plugin=&quot;cloudbees-secure-copy@3.2&quot;&gt;
+      &lt;exports/&gt;
+    &lt;/com.cloudbees.jenkins.plugins.securecopy.ExportsJobProperty&gt;
+  &lt;/properties&gt;
+  &lt;scm class=&quot;hudson.plugins.git.GitSCM&quot; plugin=&quot;git@1.3.0&quot;&gt;
+    &lt;configVersion&gt;2&lt;/configVersion&gt;
+    &lt;userRemoteConfigs&gt;
+      &lt;hudson.plugins.git.UserRemoteConfig&gt;
+        &lt;name&gt;&lt;/name&gt;
+        &lt;refspec&gt;&lt;/refspec&gt;
+        &lt;url&gt;${parentInstance.gitUrl}&lt;/url&gt;
+      &lt;/hudson.plugins.git.UserRemoteConfig&gt;
+    &lt;/userRemoteConfigs&gt;
+    &lt;branches&gt;
+      &lt;hudson.plugins.git.BranchSpec&gt;
+        &lt;name&gt;**&lt;/name&gt;
+      &lt;/hudson.plugins.git.BranchSpec&gt;
+    &lt;/branches&gt;
+    &lt;disableSubmodules&gt;false&lt;/disableSubmodules&gt;
+    &lt;recursiveSubmodules&gt;false&lt;/recursiveSubmodules&gt;
+    &lt;doGenerateSubmoduleConfigurations&gt;false&lt;/doGenerateSubmoduleConfigurations&gt;
+    &lt;authorOrCommitter&gt;false&lt;/authorOrCommitter&gt;
+    &lt;clean&gt;false&lt;/clean&gt;
+    &lt;wipeOutWorkspace&gt;false&lt;/wipeOutWorkspace&gt;
+    &lt;pruneBranches&gt;false&lt;/pruneBranches&gt;
+    &lt;remotePoll&gt;false&lt;/remotePoll&gt;
+    &lt;ignoreNotifyCommit&gt;false&lt;/ignoreNotifyCommit&gt;
+    &lt;useShallowClone&gt;false&lt;/useShallowClone&gt;
+    &lt;buildChooser class=&quot;hudson.plugins.git.util.DefaultBuildChooser&quot;/&gt;
+    &lt;gitTool&gt;Default&lt;/gitTool&gt;
+    &lt;submoduleCfg class=&quot;list&quot;/&gt;
+    &lt;relativeTargetDir&gt;&lt;/relativeTargetDir&gt;
+    &lt;reference&gt;&lt;/reference&gt;
+    &lt;excludedRegions&gt;&lt;/excludedRegions&gt;
+    &lt;excludedUsers&gt;&lt;/excludedUsers&gt;
+    &lt;gitConfigName&gt;&lt;/gitConfigName&gt;
+    &lt;gitConfigEmail&gt;&lt;/gitConfigEmail&gt;
+    &lt;skipTag&gt;false&lt;/skipTag&gt;
+    &lt;includedRegions&gt;&lt;/includedRegions&gt;
+    &lt;scmName&gt;&lt;/scmName&gt;
+  &lt;/scm&gt;
+  &lt;quietPeriod&gt;0&lt;/quietPeriod&gt;
+  &lt;canRoam&gt;true&lt;/canRoam&gt;
+  &lt;disabled&gt;false&lt;/disabled&gt;
+  &lt;blockBuildWhenDownstreamBuilding&gt;false&lt;/blockBuildWhenDownstreamBuilding&gt;
+  &lt;blockBuildWhenUpstreamBuilding&gt;false&lt;/blockBuildWhenUpstreamBuilding&gt;
+  &lt;triggers class=&quot;vector&quot;/&gt;
+  &lt;concurrentBuild&gt;false&lt;/concurrentBuild&gt;
+  &lt;builders&gt;
+&lt;hudson.plugins.copyartifact.CopyArtifact plugin=&quot;copyartifact@1.26&quot;&gt;
+&lt;project&gt;Build&lt;/project&gt;
+&lt;filter&gt;base-build.info&lt;/filter&gt;
+&lt;target/&gt;
+&lt;selector class=&quot;hudson.plugins.copyartifact.TriggeredBuildSelector&quot;&gt;
+&lt;fallbackToLastSuccessful&gt;true&lt;/fallbackToLastSuccessful&gt;
+&lt;/selector&gt;
+&lt;/hudson.plugins.copyartifact.CopyArtifact&gt;
+    &lt;hudson.tasks.Maven&gt;
+      &lt;targets&gt;clean verify&lt;/targets&gt;
+      &lt;usePrivateRepository&gt;false&lt;/usePrivateRepository&gt;
+      &lt;settings class=&quot;jenkins.mvn.DefaultSettingsProvider&quot;/&gt;
+      &lt;globalSettings class=&quot;jenkins.mvn.DefaultGlobalSettingsProvider&quot;/&gt;
+    &lt;/hudson.tasks.Maven&gt;
+  &lt;/builders&gt;
+  &lt;publishers&gt;
+&lt;hudson.tasks.Fingerprinter&gt;
+&lt;targets&gt;base-build.info&lt;/targets&gt;
+&lt;recordBuildArtifacts&gt;false&lt;/recordBuildArtifacts&gt;
+&lt;/hudson.tasks.Fingerprinter&gt;
+    &lt;hudson.tasks.junit.JUnitResultArchiver&gt;
+      &lt;testResults&gt;**/target/????????-reports/*.xml&lt;/testResults&gt;
+      &lt;keepLongStdio&gt;true&lt;/keepLongStdio&gt;
+      &lt;testDataPublishers/&gt;
+    &lt;/hudson.tasks.junit.JUnitResultArchiver&gt;
+  &lt;/publishers&gt;
+  &lt;buildWrappers/&gt;
+&lt;/project&gt;</template>
+  </transformer>
+</job-template>

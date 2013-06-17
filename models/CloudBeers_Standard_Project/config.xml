@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<com.cloudbees.hudson.plugins.modeling.impl.folder.FolderTemplate plugin="cloudbees-template@3.11-SNAPSHOT">
+  <description>A Maven based project hosted in the &lt;a href=&quot;https://github.com/cloudbeers&quot;&gt;CloudBeers GitHub account&lt;/a&gt;</description>
+  <displayName>CloudBeers GitHub Project</displayName>
+  <instantiable>true</instantiable>
+  <attributes>
+    <template-attribute>
+      <name>name</name>
+      <displayName>Name</displayName>
+      <helpHtml>The name of this project</helpHtml>
+      <control class="com.cloudbees.hudson.plugins.modeling.controls.TextFieldControl"/>
+    </template-attribute>
+    <template-attribute>
+      <name>owner</name>
+      <displayName>Owner</displayName>
+      <helpHtml>The owner of this project</helpHtml>
+      <control class="com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl">
+        <options>
+          <com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl_-Option>
+            <displayName>Kohsuke</displayName>
+            <value>kohsuke</value>
+            <inlineHelp></inlineHelp>
+          </com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl_-Option>
+          <com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl_-Option>
+            <displayName>Stephen</displayName>
+            <value>stephenc</value>
+            <inlineHelp></inlineHelp>
+          </com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl_-Option>
+          <com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl_-Option>
+            <displayName>Jesse</displayName>
+            <value>jglick</value>
+            <inlineHelp></inlineHelp>
+          </com.cloudbees.hudson.plugins.modeling.controls.ChoiceControl_-Option>
+        </options>
+        <mode>RADIO_BUTTON</mode>
+      </control>
+    </template-attribute>
+    <template-attribute>
+      <name>gitUrl</name>
+      <displayName>GIT URL</displayName>
+      <control class="com.cloudbees.hudson.plugins.modeling.controls.ComputedPropertyControl">
+        <expression>git://github.com/cloudbeers/${name}.git</expression>
+      </control>
+    </template-attribute>
+  </attributes>
+  <properties/>
+  <transformer class="com.cloudbees.hudson.plugins.modeling.transformer.GroovyTemplateModelTransformer">
+    <template>&lt;?xml version=&apos;1.0&apos; encoding=&apos;UTF-8&apos;?&gt;
+&lt;com.cloudbees.hudson.plugins.folder.Folder plugin=&quot;cloudbees-folder@3.6&quot;&gt;
+  &lt;actions/&gt;
+  &lt;description&gt;&amp;lt;a href=&quot;https://github.com/cloudbeers/&lt;%=name%&gt;&quot;&amp;gt;GitHub hosted project: &lt;%=name%&gt;&amp;lt;/a&amp;gt; related build jobs&lt;/description&gt;
+  &lt;properties&gt;
+    &lt;com.cloudbees.hudson.plugins.folder.properties.EnvVarsFolderProperty&gt;
+      &lt;properties&gt;&lt;/properties&gt;
+    &lt;/com.cloudbees.hudson.plugins.folder.properties.EnvVarsFolderProperty&gt;
+    &lt;com.cloudbees.hudson.plugins.folder.properties.SubItemFilterProperty&gt;
+      &lt;allowedTypes&gt;
+        &lt;string&gt;CloudBeers_Standard_Smoke_Tests&lt;/string&gt;
+        &lt;string&gt;CloudBeers_Standard_Full_Tests&lt;/string&gt;
+      &lt;/allowedTypes&gt;
+    &lt;/com.cloudbees.hudson.plugins.folder.properties.SubItemFilterProperty&gt;
+    &lt;com.cloudbees.hudson.plugins.folder.properties.FolderProxyGroupContainer&gt;
+      &lt;groups&gt;
+        &lt;nectar.plugins.rbac.groups.Group&gt;
+          &lt;name&gt;Owner&lt;/name&gt;
+          &lt;member&gt;&lt;%=owner%&gt;&lt;/member&gt;
+          &lt;role&gt;developer&lt;/role&gt;
+        &lt;/nectar.plugins.rbac.groups.Group&gt;
+      &lt;/groups&gt;
+    &lt;/com.cloudbees.hudson.plugins.folder.properties.FolderProxyGroupContainer&gt;
+    &lt;com.cloudbees.jenkins.plugins.foldersplus.SecurityGrantsFolderProperty plugin=&quot;cloudbees-folders-plus@1.1&quot;&gt;
+      &lt;securityGrants/&gt;
+    &lt;/com.cloudbees.jenkins.plugins.foldersplus.SecurityGrantsFolderProperty&gt;
+  &lt;/properties&gt;
+  &lt;icon class=&quot;com.cloudbees.hudson.plugins.folder.icons.AggregateFolderIcon&quot;&gt;
+    &lt;folder reference=&quot;../..&quot;/&gt;
+  &lt;/icon&gt;
+  &lt;views&gt;
+    &lt;hudson.model.ListView&gt;
+      &lt;owner class=&quot;com.cloudbees.hudson.plugins.folder.Folder&quot; reference=&quot;../../..&quot;/&gt;
+      &lt;name&gt;All&lt;/name&gt;
+      &lt;filterExecutors&gt;false&lt;/filterExecutors&gt;
+      &lt;filterQueue&gt;false&lt;/filterQueue&gt;
+      &lt;properties class=&quot;hudson.model.View\$PropertyList&quot;/&gt;
+      &lt;jobNames&gt;
+        &lt;comparator class=&quot;hudson.util.CaseInsensitiveComparator&quot;/&gt;
+      &lt;/jobNames&gt;
+      &lt;jobFilters/&gt;
+      &lt;columns&gt;
+        &lt;hudson.views.StatusColumn/&gt;
+        &lt;hudson.views.WeatherColumn/&gt;
+        &lt;hudson.views.JobColumn/&gt;
+        &lt;hudson.views.LastSuccessColumn/&gt;
+        &lt;hudson.views.LastFailureColumn/&gt;
+        &lt;hudson.views.LastDurationColumn/&gt;
+        &lt;hudson.views.BuildButtonColumn/&gt;
+      &lt;/columns&gt;
+      &lt;includeRegex&gt;.*&lt;/includeRegex&gt;
+    &lt;/hudson.model.ListView&gt;
+  &lt;/views&gt;
+  &lt;viewsTabBar class=&quot;hudson.views.DefaultViewsTabBar&quot;/&gt;
+  &lt;primaryView&gt;All&lt;/primaryView&gt;
+&lt;/com.cloudbees.hudson.plugins.folder.Folder&gt;</template>
+  </transformer>
+  <initActivities>
+    <com.cloudbees.hudson.plugins.modeling.impl.folder.activities.CreateItemActivity>
+      <from>CloudBeers_Standard_Full_Tests</from>
+      <name>Test</name>
+    </com.cloudbees.hudson.plugins.modeling.impl.folder.activities.CreateItemActivity>
+    <com.cloudbees.hudson.plugins.modeling.impl.folder.activities.CreateItemActivity>
+      <from>CloudBeers_Standard_Smoke_Tests</from>
+      <name>Build</name>
+    </com.cloudbees.hudson.plugins.modeling.impl.folder.activities.CreateItemActivity>
+  </initActivities>
+</com.cloudbees.hudson.plugins.modeling.impl.folder.FolderTemplate>
